@@ -6,24 +6,28 @@ timeout=5
 echo "Waiting 15 seconds before starting..."
 sleep 15
 
-start_time=$(date +%s)
 echo "Attempting to resolve $TARGET..."
+
+failure_start=""
 
 while true; do
     if getent hosts "$TARGET" > /dev/null 2>&1; then
         echo "$TARGET is reachable!"
-    fi
+        failure_start=""
+    else
+        now=$(date +%s)
+        echo "Could not resolve other container ($TARGET), retrying..."
 
-    now=$(date +%s)
-    elapsed=$(( now - start_time ))
-
-    if [ "$elapsed" -ge "$timeout" ]; then
-        echo "Could not resolve other container ($TARGET)"
-        exit 1
+        if [ -z "$failure_start" ]; then
+            failure_start=$now
+        else
+            elapsed=$(( now - failure_start ))
+            if [ "$elapsed" -ge "$timeout" ]; then
+                echo "Could not resolve other container ($TARGET) for $timeout seconds"
+                exit 1
+            fi
+        fi
     fi
 
     sleep 1
 done
-
-# Placeholder for app logic
-tail -f /dev/null
