@@ -11,6 +11,13 @@ echo "Attempting to resolve $TARGET..."
 failure_start=""
 
 while true; do
+    # Count and print number of lines in /etc/resolv.conf
+    resolv_line_count=$(wc -l < /etc/resolv.conf)
+    echo "/etc/resolv.conf has $resolv_line_count lines"
+    echo "--- /etc/resolv.conf ---"
+    cat /etc/resolv.conf
+    echo "------------------------"
+
     # Capture output and status code
     output=$(ping -c 1 -W 1 "$TARGET" 2>&1)
     status=$?
