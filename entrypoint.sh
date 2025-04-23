@@ -9,18 +9,21 @@ sleep 15
 echo "Attempting to resolve $TARGET..."
 
 failure_start=""
+attempt=1
 
 while true; do
+    echo "[$attempt] Pinging $TARGET..."
+
     # Capture output and status code
     output=$(ping -c 1 -W 1 "$TARGET" 2>&1)
     status=$?
 
     if [ $status -eq 0 ]; then
-        echo "$TARGET is reachable!"
+        echo "[$attempt] $TARGET is reachable!"
         failure_start=""
     else
         now=$(date +%s)
-        echo "Could not reach other container ($TARGET), retrying..."
+        echo "[$attempt] Could not reach other container ($TARGET), retrying..."
         echo "Ping output: $output"
 
         echo "--- dig output for $TARGET ---"
@@ -32,11 +35,12 @@ while true; do
         else
             elapsed=$(( now - failure_start ))
             if [ "$elapsed" -ge "$timeout" ]; then
-                echo "Could not reach other container ($TARGET) for $timeout seconds"
+                echo "[$attempt] Could not reach other container ($TARGET) for $timeout seconds"
                 exit 1
             fi
         fi
     fi
 
+    attempt=$((attempt + 1))
     sleep 1
 done
