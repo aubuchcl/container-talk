@@ -12,10 +12,9 @@ failure_start=""
 attempt=1
 
 while true; do
-    timestamp=$(date "+%Y-%m-%d %H:%M:%S.%3N")
+    timestamp=$(python3 -c 'from datetime import datetime; print(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])')
     echo "[$attempt] [$timestamp] Pinging $TARGET..."
 
-    # Capture output and status code
     output=$(ping -c 1 -W 1 "$TARGET" 2>&1)
     status=$?
 
