@@ -12,7 +12,7 @@ failure_start=""
 attempt=1
 
 while true; do
-    timestamp=$(date "+%b %d %H:%M:%S.%3N")
+    timestamp=$(date "+%Y-%m-%d %H:%M:%S.%3N")
     echo "[$attempt] [$timestamp] Pinging $TARGET..."
 
     # Capture output and status code
